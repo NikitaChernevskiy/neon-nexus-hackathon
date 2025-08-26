@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Calendar, MapPin, Clock, Zap, CheckCircle, Timer } from "@phosphor-icons/react"
+import { Calendar, MapPin, Clock, Zap, CheckCircle, Timer, X } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 interface FormData {
@@ -133,18 +133,26 @@ function App() {
   // Trigger confetti animation after success state renders
   useEffect(() => {
     if (showSuccessAnimation) {
-      const timer = setTimeout(() => {
-        setShowSuccessAnimation(false)
-        // Reset form after animation
-        setFormData({
-          name: '',
-          email: '',
-          isOnline: false
-        })
-      }, 5000) // Animation duration
-      return () => clearTimeout(timer)
+      // Remove auto-hide - popup stays open until manually closed
     }
   }, [showSuccessAnimation])
+
+  const closeSuccessPopup = () => {
+    setShowSuccessAnimation(false)
+    // Reset form after closing
+    setFormData({
+      name: '',
+      email: '',
+      isOnline: false
+    })
+  }
+
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    // Close popup if clicked outside the card
+    if (e.target === e.currentTarget) {
+      closeSuccessPopup()
+    }
+  }
 
 
 
@@ -317,7 +325,10 @@ function App() {
 
       {/* Success Popup Overlay */}
       {showSuccessAnimation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={handleOverlayClick}
+        >
           {/* Confetti Animation Background */}
           <div className="fixed inset-0 pointer-events-none">
             {[...Array(60)].map((_, i) => (
@@ -349,7 +360,15 @@ function App() {
           </div>
 
           {/* Success Card */}
-          <Card className="w-full max-w-md neon-border-active neon-glow-cyan bg-card/95 backdrop-blur-sm success-bounce">
+          <Card className="w-full max-w-md relative neon-border-active neon-glow-cyan bg-card/95 backdrop-blur-sm success-bounce">
+            {/* Close Button */}
+            <button
+              onClick={closeSuccessPopup}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-muted/80 hover:bg-muted flex items-center justify-center transition-colors duration-200 z-10"
+            >
+              <X size={18} className="text-muted-foreground hover:text-foreground" weight="bold" />
+            </button>
+            
             <CardContent className="p-8 text-center">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center neon-glow success-icon-pulse">
                 <CheckCircle size={40} className="text-white success-check-animate" weight="fill" />
