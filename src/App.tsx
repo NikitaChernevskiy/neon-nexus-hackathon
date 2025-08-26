@@ -372,9 +372,6 @@ function App() {
             <CardContent className="p-8 text-center">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center neon-glow success-icon-pulse">
                 <CheckCircle size={40} className="text-white success-check-animate" weight="fill" />
-                
-                {/* Success ring animation */}
-                <div className="absolute inset-0 rounded-full border-4 border-accent success-ring-expand"></div>
               </div>
               
               <h2 className="text-3xl font-black uppercase mb-4 synthwave-text success-text-glow">
