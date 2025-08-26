@@ -105,20 +105,24 @@ function App() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('https://SAMPLE.URL/IWILLREPLACEITLATER', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      })
+      // Simulate API call for demo purposes
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      // For production, replace with actual API call:
+      // const response = await fetch('https://SAMPLE.URL/IWILLREPLACEITLATER', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(formData)
+      // })
 
-      if (response.ok) {
+      // if (response.ok) {
         setShowSuccessAnimation(true)
         toast.success("Registration successful! See you at the hackathon!")
-      } else {
-        toast.error("Registration failed. Please try again.")
-      }
+      // } else {
+      //   toast.error("Registration failed. Please try again.")
+      // }
     } catch (error) {
       toast.error("Network error. Please check your connection and try again.")
     } finally {
@@ -209,7 +213,7 @@ function App() {
 
           <div className="flex flex-col items-center text-center p-6 bg-card/40 backdrop-blur-sm rounded-2xl neon-border">
             <div className="w-16 h-16 rounded-2xl bg-accent/20 flex items-center justify-center neon-glow-yellow mb-4">
-              <Clock size={32} className="text-accent-foreground" weight="bold" />
+              <Clock size={32} className="text-accent" weight="bold" />
             </div>
             <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2">Duration</p>
             <p className="text-2xl font-bold text-card-foreground">2 Hours</p>
@@ -226,7 +230,7 @@ function App() {
 
       {/* Registration Form - Container */}
       <div className="flex justify-center">
-        <Card className="w-full max-w-2xl neon-border-active neon-glow bg-card/90 backdrop-blur-sm">
+        <Card className="w-full max-w-4xl neon-border-active neon-glow bg-card/90 backdrop-blur-sm">
           <CardHeader>
             <h2 className="text-3xl font-black uppercase synthwave-text text-center">
               Join the Vibe
