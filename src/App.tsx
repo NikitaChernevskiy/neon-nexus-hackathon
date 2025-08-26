@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Calendar, MapPin, Clock, Zap } from "@phosphor-icons/react"
+import { Calendar, MapPin, Clock, Zap, Confetti, CheckCircle } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 interface FormData {
@@ -21,6 +21,7 @@ function App() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
 
   const handleInputChange = (field: keyof FormData, value: string | boolean) => {
     setFormData(prev => ({
@@ -55,6 +56,7 @@ function App() {
 
       if (response.ok) {
         setIsSubmitted(true)
+        setShowSuccessAnimation(true)
         toast.success("Registration successful! See you at the hackathon!")
       } else {
         toast.error("Registration failed. Please try again.")
@@ -66,24 +68,97 @@ function App() {
     }
   }
 
+  // Trigger confetti animation after success state renders
+  useEffect(() => {
+    if (showSuccessAnimation) {
+      const timer = setTimeout(() => {
+        setShowSuccessAnimation(false)
+      }, 3000) // Animation duration
+      return () => clearTimeout(timer)
+    }
+  }, [showSuccessAnimation])
+
   if (isSubmitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="w-full max-w-md neon-border-active neon-glow-cyan bg-card/90 backdrop-blur-sm">
+      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+        {/* Confetti Animation Background */}
+        {showSuccessAnimation && (
+          <div className="fixed inset-0 pointer-events-none z-10">
+            {[...Array(50)].map((_, i) => (
+              <div
+                key={i}
+                className="confetti-particle absolute"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: `${3 + Math.random() * 2}s`
+                }}
+              />
+            ))}
+          </div>
+        )}
+        
+        {/* Success celebration particles */}
+        {showSuccessAnimation && (
+          <div className="fixed inset-0 pointer-events-none z-10">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={`star-${i}`}
+                className="success-star absolute"
+                style={{
+                  left: `${20 + Math.random() * 60}%`,
+                  top: `${20 + Math.random() * 60}%`,
+                  animationDelay: `${i * 0.2}s`
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        <Card className={`w-full max-w-md neon-border-active neon-glow-cyan bg-card/90 backdrop-blur-sm relative z-20 ${
+          showSuccessAnimation ? 'success-bounce' : ''
+        }`}>
           <CardContent className="p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center neon-glow">
-              <Zap size={32} className="text-white" weight="fill" />
+            <div className={`w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center neon-glow relative ${
+              showSuccessAnimation ? 'success-icon-pulse' : ''
+            }`}>
+              {showSuccessAnimation ? (
+                <CheckCircle size={32} className="text-white success-check-animate" weight="fill" />
+              ) : (
+                <Zap size={32} className="text-white" weight="fill" />
+              )}
+              
+              {/* Success ring animation */}
+              {showSuccessAnimation && (
+                <div className="absolute inset-0 rounded-full border-4 border-accent success-ring-expand"></div>
+              )}
             </div>
-            <h2 className="text-2xl font-black uppercase mb-4 synthwave-text">
+            
+            <h2 className={`text-2xl font-black uppercase mb-4 synthwave-text ${
+              showSuccessAnimation ? 'success-text-glow' : ''
+            }`}>
               You're In!
             </h2>
+            
             <p className="text-card-foreground/80 mb-6">
               Welcome to Vibe Hackathon! We'll send you event details and updates to your email.
             </p>
+            
             <div className="space-y-2 text-sm text-muted-foreground">
               <p><strong>September 27th</strong> • VR Portal Blagoevgrad</p>
               <p>Attending: <span className="text-accent font-semibold">{formData.isOnline ? 'Online' : 'In Person'}</span></p>
             </div>
+
+            {/* Celebration message */}
+            {showSuccessAnimation && (
+              <div className="mt-6 success-message-slide">
+                <div className="flex items-center justify-center space-x-2 text-accent">
+                  <Confetti size={20} weight="fill" />
+                  <span className="font-bold">Get ready to hack!</span>
+                  <Confetti size={20} weight="fill" />
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
